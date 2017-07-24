@@ -43,7 +43,7 @@ namespace cv
         void trainingImpl(String imageList, String groundTruth);
 
         Rect getBBox(Mat &img, const Mat_<float> shape, CascadeClassifier cc);
-        void prepareTrainingData(std::vector<String> images, std::vector<std::vector<Point2f> > & facePoints, std::vector<Mat> & cropped, std::vector<Mat> shapes, std::vector<BBox> &boxes, CascadeClassifier cc);
+        void prepareTrainingData(std::vector<String> images, std::vector<std::vector<Point2f> > & facePoints, std::vector<Mat> & cropped, std::vector<Mat> & shapes, std::vector<BBox> &boxes, CascadeClassifier cc);
         FacemarkLBF::Params params;
     private:
         bool isModelTrained;
@@ -116,7 +116,7 @@ namespace cv
     }
 
     /*----------------TRAINING----------------------*/
-    void FacemarkLBFImpl::prepareTrainingData(std::vector<String> images, std::vector<std::vector<Point2f> > & facePoints, std::vector<Mat> & cropped, std::vector<Mat> shapes, std::vector<BBox> &boxes, CascadeClassifier cc){
+    void FacemarkLBFImpl::prepareTrainingData(std::vector<String> images, std::vector<std::vector<Point2f> > & facePoints, std::vector<Mat> & cropped, std::vector<Mat> & shapes, std::vector<BBox> &boxes, CascadeClassifier cc){
         std::vector<std::vector<Point2f> > facePts;
         boxes.clear();
         cropped.clear();
@@ -207,9 +207,9 @@ namespace cv
     }
 
     // Project absolute shape to relative shape binding to this bbox
-    Mat FacemarkLBFImpl::BBox::Project(const Mat &shape) const {
-        Mat_<double> res(shape.rows, shape.cols);
-        const Mat_<double> &shape_ = (Mat_<double>)shape;
+    Mat BBox::Project(const Mat &shape) const {
+        Mat_<float> res(shape.rows, shape.cols);
+        const Mat_<float> &shape_ = (Mat_<float>)shape;
         for (int i = 0; i < shape.rows; i++) {
             res(i, 0) = (shape_(i, 0) - x_center) / x_scale;
             res(i, 1) = (shape_(i, 1) - y_center) / y_scale;
@@ -218,9 +218,9 @@ namespace cv
     }
 
     // Project relative shape to absolute shape binding to this bbox
-    Mat FacemarkLBFImpl::BBox::ReProject(const Mat &shape) const {
-        Mat_<double> res(shape.rows, shape.cols);
-        const Mat_<double> &shape_ = (Mat_<double>)shape;
+    Mat BBox::ReProject(const Mat &shape) const {
+        Mat_<float> res(shape.rows, shape.cols);
+        const Mat_<float> &shape_ = (Mat_<float>)shape;
         for (int i = 0; i < shape.rows; i++) {
             res(i, 0) = shape_(i, 0)*x_scale + x_center;
             res(i, 1) = shape_(i, 1)*y_scale + y_center;
